@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -9,19 +10,20 @@ use Illuminate\Support\Facades\Cache;
 class TaskController extends Controller
 {
     public function index()
-{
-    $tasks = Cache::remember('tasks_all', 60, function () {
-        return Task::all()->toArray();
-    });
-    return response()->json(['success' => true, 'data' => $tasks], 200);
-}
+    {
+        $tasks = Cache::remember('tasks_all', 60, function () {
+            return Task::all()->toArray();
+        });
+        return response()->json(['success' => true, 'data' => $tasks], 200);
+    }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title'       => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'status'      => 'nullable|string',
+            'title'         => 'required|string|max:255',
+            'description'   => 'nullable|string',
+            'status'        => 'nullable|string',
+            'album_number'  => 'required|string',
         ]);
         $task = Task::create($validated);
         Cache::forget('tasks_all');
@@ -38,9 +40,10 @@ class TaskController extends Controller
     {
         $task = Task::findOrFail($id);
         $validated = $request->validate([
-            'title'       => 'sometimes|string|max:255',
-            'description' => 'nullable|string',
-            'status'      => 'nullable|string',
+            'title'         => 'sometimes|string|max:255',
+            'description'   => 'nullable|string',
+            'status'        => 'nullable|string',
+            'album_number'  => 'sometimes|string',
         ]);
         $task->update($validated);
         Cache::forget('tasks_all');

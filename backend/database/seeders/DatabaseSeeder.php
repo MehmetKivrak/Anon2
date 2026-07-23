@@ -15,9 +15,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            RestaurantSeeder::class,
+            TaskSeeder::class,
+        ]);
         // User::factory(10)->create();
 
-        User::factory()->create([
+        User::factory()->firstOrCreate([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);

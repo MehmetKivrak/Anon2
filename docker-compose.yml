@@ -1,7 +1,9 @@
-services:
+﻿services:
 
   backend:
-    image: php:8.4-fpm
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: backend
     working_dir: /var/www/html
     volumes:
@@ -15,13 +17,6 @@ services:
       - DB_DATABASE=taskdb
       - DB_USERNAME=taskuser
       - DB_PASSWORD=taskpass
-    command: >
-      sh -c "apt-get update &&
-             apt-get install -y libpq-dev zip unzip git &&
-             docker-php-ext-install pdo pdo_pgsql &&
-             pecl install redis || true &&
-             docker-php-ext-enable redis || true &&
-             php-fpm"
 
   nginx:
     image: nginx:alpine
